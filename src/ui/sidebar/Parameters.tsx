@@ -139,6 +139,18 @@ export function Parameters({ builder }: Props) {
         />
       </label>
 
+      <label className="inline symbols-toggle">
+        <input
+          type="checkbox"
+          checked={state.symbols}
+          onChange={(e) => dispatch({ type: 'setSymbols', value: e.target.checked })}
+        />
+        Write element symbols (C, H) instead of atomic numbers
+      </label>
+      <p className="hint">
+        The dataset files use atomic numbers (6, 1). Some viewers only accept symbols.
+      </p>
+
       <button type="button" className="link disclosure" onClick={() => setAdvanced((v) => !v)}>
         {advanced ? '▾' : '▸'} Model limits
       </button>

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: 'If you use this software, please cite it as below.'
+title: 'Benzenoid Builder: an interactive honeycomb editor for benzenoid molecules'
+type: software
+authors:
+  - family-names: Draskovic
+    given-names: Radovan
+license: MIT
+repository-code: 'https://github.com/Drashko73/benzenoid-builder'
+keywords:
+  - benzenoid
+  - polycyclic aromatic hydrocarbons
+  - molecular geometry
+  - xyz
+  - honeycomb lattice
+version: 0.1.0
+date-released: 2026-09-15

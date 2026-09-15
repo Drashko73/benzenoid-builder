@@ -28,6 +28,11 @@ function pad(text: string, width: number): string {
 export interface XyzOptions {
   /** Comment line (written after two leading spaces). Blank in the dataset. */
   comment?: string;
+  /**
+   * Write element symbols (C, H) instead of atomic numbers. Off by default to
+   * match the dataset; on for viewers that only accept symbols.
+   */
+  symbols?: boolean;
 }
 
 /** Serialise a molecule to .xyz text, ring carbons first then terminal atoms. */
@@ -35,8 +40,9 @@ export function toXyz(molecule: Molecule, options: XyzOptions = {}): string {
   const comment = (options.comment ?? '').replace(/[\r\n]+/g, ' ');
   const lines = [pad(String(molecule.atoms.length), 6), `  ${comment}`];
   for (const atom of molecule.atoms) {
+    const label = options.symbols ? atom.element : String(atomicNumber(atom.element));
     lines.push(
-      pad(String(atomicNumber(atom.element)), 6) +
+      pad(label, 6) +
         pad(formatFixed(atom.x, 6), 22) +
         pad(formatFixed(atom.y, 6), 12) +
         pad(formatFixed(atom.z, 6), 12),

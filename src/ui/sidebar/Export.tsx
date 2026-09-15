@@ -11,7 +11,10 @@ interface Props {
 
 export function Export({ builder, previewRef, notify }: Props) {
   const { state, molecule, validation, canExport, cells, dispatch, shareUrl } = builder;
-  const xyz = useMemo(() => toXyz(molecule, { comment: state.comment }), [molecule, state.comment]);
+  const xyz = useMemo(
+    () => toXyz(molecule, { comment: state.comment, symbols: state.symbols }),
+    [molecule, state.comment, state.symbols],
+  );
   const stem = fileStem(state.name, molecule.formula);
   const [importText, setImportText] = useState('');
   const [importOpen, setImportOpen] = useState(false);

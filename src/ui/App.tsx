@@ -56,9 +56,21 @@ export function App() {
       return;
     }
     const stem = fileStem(state.name, molecule.formula);
-    downloadText(toXyz(molecule, { comment: state.comment }), `${stem}.xyz`, 'chemical/x-xyz');
+    downloadText(
+      toXyz(molecule, { comment: state.comment, symbols: state.symbols }),
+      `${stem}.xyz`,
+      'chemical/x-xyz',
+    );
     notify(`Downloaded ${stem}.xyz`);
-  }, [builder.canExport, molecule, state.comment, state.name, validation.errors, notify]);
+  }, [
+    builder.canExport,
+    molecule,
+    state.comment,
+    state.symbols,
+    state.name,
+    validation.errors,
+    notify,
+  ]);
 
   // Keyboard shortcuts.
   useEffect(() => {

@@ -42,6 +42,13 @@ describe('toXyz', () => {
     expect(text).not.toContain('\r');
   });
 
+  it('can write element symbols instead of atomic numbers', () => {
+    const symbolic = toXyz(buildMolecule(acene(1)), { symbols: true }).split('\n');
+    expect(symbolic[2].startsWith('     C')).toBe(true);
+    expect(symbolic[8].startsWith('     H')).toBe(true);
+    expect(symbolic[2].length).toBe(52);
+  });
+
   it('strips newlines from the comment', () => {
     expect(toXyz(buildMolecule(acene(1)), { comment: 'a\nb' }).split('\n')[1]).toBe('  a b');
   });

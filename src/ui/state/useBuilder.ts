@@ -34,6 +34,8 @@ export interface BuilderState {
   orient: Orientation;
   name: string;
   comment: string;
+  /** Write element symbols instead of atomic numbers. */
+  symbols: boolean;
   limits: ModelLimits;
   allowOversize: boolean;
   view: ViewOptions;
@@ -56,6 +58,7 @@ export type BuilderAction =
   | { type: 'setParams'; ccBond?: number; chBond?: number; orient?: Orientation }
   | { type: 'setName'; name: string }
   | { type: 'setComment'; comment: string }
+  | { type: 'setSymbols'; value: boolean }
   | { type: 'setLimits'; limits: ModelLimits }
   | { type: 'setAllowOversize'; value: boolean }
   | { type: 'setView'; view: Partial<ViewOptions> };
@@ -69,6 +72,7 @@ export const initialState: BuilderState = {
   orient: 'principal',
   name: '',
   comment: '',
+  symbols: false,
   limits: DEFAULT_MODEL_LIMITS,
   allowOversize: false,
   view: { showGrid: true, showLabels: false, showHydrogens: true, showRingNumbers: false },
@@ -161,6 +165,8 @@ export function reducer(state: BuilderState, action: BuilderAction): BuilderStat
       return { ...state, name: action.name };
     case 'setComment':
       return { ...state, comment: action.comment };
+    case 'setSymbols':
+      return { ...state, symbols: action.value };
     case 'setLimits':
       return { ...state, limits: action.limits };
     case 'setAllowOversize':
