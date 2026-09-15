@@ -110,14 +110,11 @@ describe('buildMolecule', () => {
   });
 
   it('centres the all-atom centroid on the origin', () => {
-    const m = buildMolecule(
-      [
-        [0, 0],
-        [1, 0],
-        [1, 1],
-        [3, -2],
-      ].slice(0, 3),
-    );
+    const m = buildMolecule([
+      [0, 0],
+      [1, 0],
+      [1, 1],
+    ]);
     const n = m.atoms.length;
     expect(m.atoms.reduce((s, a) => s + a.x, 0) / n).toBeCloseTo(0, 9);
     expect(m.atoms.reduce((s, a) => s + a.y, 0) / n).toBeCloseTo(0, 9);
