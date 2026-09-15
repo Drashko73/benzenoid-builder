@@ -140,20 +140,13 @@ export function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <svg width="26" height="26" viewBox="-1.2 -1.2 2.4 2.4" aria-hidden="true">
-            <polygon
-              points="0,1 -0.866,0.5 -0.866,-0.5 0,-1 0.866,-0.5 0.866,0.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="0.16"
-            />
-            <circle r="0.16" cx="0" cy="1" fill="currentColor" />
-            <circle r="0.16" cx="-0.866" cy="0.5" fill="currentColor" />
-            <circle r="0.16" cx="-0.866" cy="-0.5" fill="currentColor" />
-            <circle r="0.16" cx="0" cy="-1" fill="currentColor" />
-            <circle r="0.16" cx="0.866" cy="-0.5" fill="currentColor" />
-            <circle r="0.16" cx="0.866" cy="0.5" fill="currentColor" />
-          </svg>
+          <img
+            src={`${import.meta.env.BASE_URL}favicon.svg`}
+            width={28}
+            height={28}
+            alt=""
+            className="logo"
+          />
           <h1>Benzenoid Builder</h1>
           <span className="tagline">design fused-ring C/H molecules, export .xyz</span>
         </div>

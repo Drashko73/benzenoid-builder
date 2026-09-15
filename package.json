@@ -25,7 +25,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "favicon": "node scripts/favicon.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

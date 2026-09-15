@@ -118,6 +118,10 @@ h3 {
   color: var(--text);
 }
 
+.logo {
+  border-radius: 7px;
+}
+
 .brand h1 {
   font-size: 17px;
 }
