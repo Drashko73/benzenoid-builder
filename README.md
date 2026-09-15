@@ -28,8 +28,8 @@ useful on its own for anyone who needs polycyclic aromatic hydrocarbon geometrie
   - an empty hexagon whose six corners are already carbons is a ring whether you
     selected it or not (six rings around a hole are coronene) — _Fill_ adds it;
   - overlapping hydrogens in fjord regions ([4]helicene and the like), where a planar
-    model is physically wrong.
-  There is no size limit: draw graphene flakes as large as you like.
+    model is physically wrong;
+  - a sanity cap of 1 000 atoms (the largest benzenoid ever synthesised has 264).
 - **Presets and families.** Benzene to hexabenzocoronene and the large flakes of the
   training set; parametric acenes, zigzag chains, hexagonal and rectangular flakes.
 - **Export.** `.xyz` download or copy, ring coordinates as JSON, SVG / PNG image of the

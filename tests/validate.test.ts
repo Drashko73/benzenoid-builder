@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   acene,
   buildMolecule,
+  MAX_ATOMS,
   connectedComponents,
   hexFlake,
   implicitRings,
@@ -82,14 +83,23 @@ describe('validateCells', () => {
     expect(terminalClashes(buildMolecule(zigzag(3)), 1.8)[0].distance).toBeCloseTo(1.75, 2);
   });
 
-  it('accepts molecules of any size', () => {
+  it('accepts large molecules up to the sanity cap and rejects beyond it', () => {
     expect(validateCells(hexFlake(4)).ok).toBe(true); // C150H30, 180 atoms
-    expect(validateCells(hexFlake(8)).ok).toBe(true); // 217 rings
+    expect(validateCells(hexFlake(11)).ok).toBe(true); // C864H72, 936 atoms
+    const huge = validateCells(hexFlake(12)); // C1014H78, 1092 atoms
+    expect(huge.ok).toBe(false);
+    expect(huge.errors[0].id).toBe('too-large');
   });
 
   it('skips geometry checks while structural errors are present', () => {
     const result = validateCells([...RING.slice(0, 4), [20, 20]]);
     expect(result.issues.map((i) => i.id)).toEqual(['disconnected']);
+  });
+});
+
+describe('MAX_ATOMS', () => {
+  it('is a generous sanity cap, well above any synthesised benzenoid', () => {
+    expect(MAX_ATOMS).toBeGreaterThanOrEqual(500);
   });
 });
 

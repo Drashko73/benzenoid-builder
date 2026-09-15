@@ -18,6 +18,14 @@ import {
 } from './lattice';
 import type { BuildParams, Cell, Molecule, ValidationIssue, ValidationResult } from './types';
 
+/**
+ * Sanity cap on molecule size. The largest benzenoid ever synthesised is about
+ * C222H42 (264 atoms); beyond a few hundred atoms one is drawing a graphene
+ * nanoflake, not a molecule, and the editor and .xyz preview stop being useful.
+ * Not a limit of the prediction pipeline — change it freely.
+ */
+export const MAX_ATOMS = 1000;
+
 /** Below this H–H distance the planar model is physically wrong (fjord regions: 0.57 Å). */
 export const HH_CLASH_ERROR = 1.0;
 /** Below this the hydrogens are crowded; an ordinary bay region sits at 1.75 Å. */
@@ -155,6 +163,17 @@ export function validateCells(
   if (issues.length) return summarise(issues);
 
   const molecule = buildMolecule(cells, options.params);
+  const nAtoms = molecule.atoms.length;
+  if (nAtoms > MAX_ATOMS) {
+    issues.push({
+      id: 'too-large',
+      severity: 'error',
+      title: `${nAtoms.toLocaleString()} atoms — the builder stops at ${MAX_ATOMS.toLocaleString()}`,
+      detail:
+        'The largest benzenoid ever made in a lab has 264 atoms; past a few hundred you are ' +
+        'drawing a graphene sheet rather than a molecule. Remove some rings to export.',
+    });
+  }
 
   const clashes = terminalClashes(molecule, HH_CLASH_WARNING);
   const severe = clashes.filter((c) => c.distance < HH_CLASH_ERROR);

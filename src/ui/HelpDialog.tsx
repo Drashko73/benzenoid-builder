@@ -74,6 +74,10 @@ export function HelpDialog({ open, onClose }: Props) {
             the flat model places two hydrogens on top of each other; the real molecule is a twisted
             helicene, outside what a planar builder can describe.
           </li>
+          <li>
+            <b>At most 1 000 atoms.</b> The largest benzenoid ever synthesised has 264; beyond a few
+            hundred atoms the drawing is a graphene sheet rather than a molecule.
+          </li>
         </ul>
 
         <h3>The exported file</h3>
