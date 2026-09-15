@@ -60,6 +60,30 @@ describe('App', () => {
     expect(screen.getByLabelText('as drawn')).toBeChecked();
   });
 
+  it('on touch, a tap toggles a ring but a drag does not', () => {
+    render(<App />);
+    const touch = (type: string, x: number, y: number) =>
+      fireEvent(
+        svg(),
+        new PointerEvent(type, {
+          bubbles: true,
+          pointerId: 1,
+          pointerType: 'touch',
+          isPrimary: true,
+          button: 0,
+          clientX: x,
+          clientY: y,
+        }),
+      );
+    touch('pointerdown', 0, 0);
+    touch('pointermove', 60, 0);
+    touch('pointerup', 60, 0);
+    expect(screen.getByText('No rings selected')).toBeInTheDocument();
+    touch('pointerdown', 0, 0);
+    touch('pointerup', 0, 0);
+    expect(screen.getByTitle('C6H6')).toBeInTheDocument();
+  });
+
   it('reports an enclosed ring and fixes it on request', () => {
     window.history.replaceState(null, '', '/#c=1,0;0,1;-1,1;-1,0;0,-1;1,-1');
     render(<App />);

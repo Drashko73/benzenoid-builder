@@ -121,6 +121,7 @@ same coordinates in a compact row-range form.
 | `F` / `0`                                       | fit the view to the molecule / reset the view      |
 | `G` `H` `L` `R`                                 | toggle grid, hydrogens, atom numbers, ring numbers |
 | `Space` + drag                                  | pan                                                |
+| Touch                                           | tap = add/remove, drag = move, pinch = zoom; the on-canvas **Paint** switch makes drags paint rings instead |
 | `Shift` + drag                                  | erase rings                                        |
 | `?`                                             | help                                               |
 

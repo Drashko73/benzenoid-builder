@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toXyz, type Cell } from '../core';
-import { HoneycombCanvas, type CanvasHandle, type CellHighlight } from './canvas/HoneycombCanvas';
+import {
+  HoneycombCanvas,
+  type CanvasHandle,
+  type CellHighlight,
+  type TouchMode,
+} from './canvas/HoneycombCanvas';
 import { cellKey } from '../core';
 import { downloadText } from './download';
 import { HelpDialog } from './HelpDialog';
@@ -12,6 +17,21 @@ import { Summary } from './sidebar/Summary';
 import { Validation } from './sidebar/Validation';
 import { fileStem, useBuilder } from './state/useBuilder';
 import { useTheme } from './theme';
+
+/** True on phones and tablets, where the primary pointer is a finger. */
+function useCoarsePointer(): boolean {
+  const [coarse, setCoarse] = useState(
+    () => typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia?.('(pointer: coarse)');
+    if (!mq) return;
+    const update = () => setCoarse(mq.matches);
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return coarse;
+}
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -28,6 +48,8 @@ export function App() {
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
   const { theme, toggleTheme } = useTheme();
+  const coarsePointer = useCoarsePointer();
+  const [touchMode, setTouchMode] = useState<TouchMode>('move');
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -271,9 +293,40 @@ export function App() {
             highlightCells={highlightCells}
             highlightAtoms={highlightAtoms}
             onHoverCell={setHoverCell}
+            touchMode={touchMode}
           />
+          {coarsePointer && (
+            <div className="touch-mode" role="radiogroup" aria-label="Touch mode">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={touchMode === 'move'}
+                className={touchMode === 'move' ? 'active' : ''}
+                onClick={() => setTouchMode('move')}
+                title="Tap to add or remove a ring, drag to move around, pinch to zoom"
+              >
+                ✋ Move
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={touchMode === 'paint'}
+                className={touchMode === 'paint' ? 'active' : ''}
+                onClick={() => setTouchMode('paint')}
+                title="Drag to add or remove many rings at once"
+              >
+                ✎ Paint
+              </button>
+            </div>
+          )}
           <div className="canvas-status" aria-live="polite">
-            {hoverCell ? (
+            {coarsePointer ? (
+              <span>
+                {touchMode === 'move'
+                  ? 'tap a hexagon to add or remove a ring · drag to move · pinch to zoom'
+                  : 'drag to paint rings · switch to Move to pan'}
+              </span>
+            ) : hoverCell ? (
               <span>
                 ring ({hoverCell[0]}, {hoverCell[1]})
                 {state.cells.has(cellKey(hoverCell)) ? ' · selected' : ''}

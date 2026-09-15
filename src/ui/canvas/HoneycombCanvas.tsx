@@ -43,16 +43,26 @@ export interface CanvasHandle {
 
 export type CellHighlight = 'error' | 'warning';
 
+/**
+ * How a one-finger drag behaves on touch screens. 'move' (default) pans and a
+ * tap toggles a ring; 'paint' drags rings like the mouse does. Mouse and pen
+ * input always paint on drag, and pan with the right/middle button or Space.
+ */
+export type TouchMode = 'move' | 'paint';
+
 interface Props {
   builder: Builder;
   highlightCells: ReadonlyMap<string, CellHighlight>;
   highlightAtoms: ReadonlySet<number>;
   onHoverCell?: (cell: Cell | null) => void;
+  touchMode?: TouchMode;
 }
 
 const MIN_SCALE = 6;
 const MAX_SCALE = 160;
 const DEFAULT_SCALE = 42;
+/** Finger movement below this is a tap, not a drag. */
+const TAP_SLOP_PX = 8;
 
 const SQRT3 = Math.sqrt(3);
 
@@ -67,7 +77,7 @@ function fitCamera(molecule: Molecule, width: number, height: number, cc: number
 }
 
 export const HoneycombCanvas = forwardRef<CanvasHandle, Props>(function HoneycombCanvas(
-  { builder, highlightCells, highlightAtoms, onHoverCell },
+  { builder, highlightCells, highlightAtoms, onHoverCell, touchMode = 'move' },
   ref,
 ) {
   const { state, dispatch, latticeMolecule } = builder;
@@ -82,6 +92,8 @@ export const HoneycombCanvas = forwardRef<CanvasHandle, Props>(function Honeycom
   const gesture = useRef<
     | { kind: 'paint'; mode: PaintMode; last: string }
     | { kind: 'pan'; startX: number; startY: number; cam: Camera }
+    // A touch that may still turn out to be a tap (toggle) or a drag (pan).
+    | { kind: 'tap-or-pan'; startX: number; startY: number; cam: Camera; moved: boolean }
     | { kind: 'pinch'; dist: number; cam: Camera; mid: { x: number; y: number } }
     | null
   >(null);
@@ -217,6 +229,16 @@ export const HoneycombCanvas = forwardRef<CanvasHandle, Props>(function Honeycom
       return;
     }
     if (e.button !== 0) return;
+    if (e.pointerType === 'touch' && touchMode === 'move') {
+      gesture.current = {
+        kind: 'tap-or-pan',
+        startX: e.clientX,
+        startY: e.clientY,
+        cam: camera,
+        moved: false,
+      };
+      return;
+    }
     const cell = cellAt(e.clientX, e.clientY);
     const key = cellKey(cell);
     const mode: PaintMode = e.shiftKey || state.cells.has(key) ? 'remove' : 'add';
@@ -241,7 +263,11 @@ export const HoneycombCanvas = forwardRef<CanvasHandle, Props>(function Honeycom
       });
       return;
     }
-    if (g?.kind === 'pan') {
+    if (g?.kind === 'tap-or-pan') {
+      if (!g.moved && Math.hypot(e.clientX - g.startX, e.clientY - g.startY) < TAP_SLOP_PX) return;
+      g.moved = true;
+    }
+    if (g?.kind === 'pan' || g?.kind === 'tap-or-pan') {
       setCamera({
         cx: g.cam.cx - (e.clientX - g.startX) / g.cam.scale,
         cy: g.cam.cy + (e.clientY - g.startY) / g.cam.scale,
@@ -265,6 +291,10 @@ export const HoneycombCanvas = forwardRef<CanvasHandle, Props>(function Honeycom
     pointers.current.delete(e.pointerId);
     if (svgRef.current?.hasPointerCapture(e.pointerId)) {
       svgRef.current.releasePointerCapture(e.pointerId);
+    }
+    const g = gesture.current;
+    if (g?.kind === 'tap-or-pan' && !g.moved && e.type === 'pointerup') {
+      dispatch({ type: 'toggle', cell: cellAt(e.clientX, e.clientY) });
     }
     if (pointers.current.size === 0) gesture.current = null;
   };
@@ -304,7 +334,8 @@ export const HoneycombCanvas = forwardRef<CanvasHandle, Props>(function Honeycom
   }, [size, camera, cc, state.view.showGrid, state.cells, highlightCells]);
 
   const transform = `translate(${size.width / 2} ${size.height / 2}) scale(${camera.scale} ${-camera.scale}) translate(${-camera.cx} ${-camera.cy})`;
-  const cursor = spaceHeld || gesture.current?.kind === 'pan' ? 'grabbing' : 'crosshair';
+  const panning = gesture.current?.kind === 'pan' || gesture.current?.kind === 'tap-or-pan';
+  const cursor = spaceHeld || panning ? 'grabbing' : 'crosshair';
 
   return (
     <svg

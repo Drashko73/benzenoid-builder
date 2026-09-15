@@ -35,8 +35,12 @@ export function HelpDialog({ open, onClose }: Props) {
             <b>Shift + drag</b> always removes.
           </li>
           <li>
-            <b>Scroll</b> to zoom, <b>right / middle drag</b> or <b>Space + drag</b> to pan; pinch
-            on touch screens.
+            <b>Scroll</b> to zoom, <b>right / middle drag</b> or <b>Space + drag</b> to pan.
+          </li>
+          <li>
+            <b>On a phone or tablet:</b> tap a hexagon to add or remove it, drag with one finger to
+            move around, pinch to zoom. Switch to <b>Paint</b> (button on the canvas) to drag rings
+            in instead.
           </li>
         </ul>
 
