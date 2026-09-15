@@ -1,24 +1,14 @@
-import type { Molecule, ModelLimits, ValidationResult } from '../../core';
+import type { Molecule, ValidationResult } from '../../core';
 import { prettyFormula } from '../format';
 
 interface Props {
   molecule: Molecule;
   validation: ValidationResult;
-  limits: ModelLimits;
   ringCount: number;
 }
 
-export function Summary({ molecule, validation, limits, ringCount }: Props) {
+export function Summary({ molecule, validation, ringCount }: Props) {
   const nAtoms = molecule.atoms.length;
-  const domain =
-    nAtoms === 0
-      ? null
-      : nAtoms > limits.hardMaxAtoms
-        ? { cls: 'bad', text: `exceeds model limit (${limits.hardMaxAtoms})` }
-        : nAtoms > limits.trainingMaxAtoms
-          ? { cls: 'warn', text: `outside training range (≤ ${limits.trainingMaxAtoms})` }
-          : { cls: 'good', text: 'inside training range' };
-
   const status = !nAtoms
     ? { cls: 'muted', text: 'empty' }
     : validation.ok
@@ -59,14 +49,6 @@ export function Summary({ molecule, validation, limits, ringCount }: Props) {
           </dd>
         </div>
       </dl>
-      {domain && (
-        <p
-          className={`domain ${domain.cls}`}
-          title="Relative to the current-density prediction model"
-        >
-          Model domain: {domain.text}
-        </p>
-      )}
     </section>
   );
 }

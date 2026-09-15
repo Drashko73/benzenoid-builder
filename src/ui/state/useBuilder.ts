@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import {
   CC_BOND,
   CH_BOND,
-  DEFAULT_MODEL_LIMITS,
   buildMolecule,
   cellKey,
   decodeState,
@@ -16,7 +15,6 @@ import {
   validateCells,
   type Cell,
   type FixAction,
-  type ModelLimits,
   type Orientation,
 } from '../../core';
 
@@ -36,8 +34,6 @@ export interface BuilderState {
   comment: string;
   /** Write element symbols instead of atomic numbers. */
   symbols: boolean;
-  limits: ModelLimits;
-  allowOversize: boolean;
   view: ViewOptions;
   past: ReadonlySet<string>[];
   future: ReadonlySet<string>[];
@@ -59,8 +55,6 @@ export type BuilderAction =
   | { type: 'setName'; name: string }
   | { type: 'setComment'; comment: string }
   | { type: 'setSymbols'; value: boolean }
-  | { type: 'setLimits'; limits: ModelLimits }
-  | { type: 'setAllowOversize'; value: boolean }
   | { type: 'setView'; view: Partial<ViewOptions> };
 
 const HISTORY_LIMIT = 200;
@@ -73,8 +67,6 @@ export const initialState: BuilderState = {
   name: '',
   comment: '',
   symbols: false,
-  limits: DEFAULT_MODEL_LIMITS,
-  allowOversize: false,
   view: { showGrid: true, showLabels: false, showHydrogens: true, showRingNumbers: false },
   past: [],
   future: [],
@@ -167,10 +159,6 @@ export function reducer(state: BuilderState, action: BuilderAction): BuilderStat
       return { ...state, comment: action.comment };
     case 'setSymbols':
       return { ...state, symbols: action.value };
-    case 'setLimits':
-      return { ...state, limits: action.limits };
-    case 'setAllowOversize':
-      return { ...state, allowOversize: action.value };
     case 'setView':
       return { ...state, view: { ...state.view, ...action.view } };
     default:
@@ -222,10 +210,7 @@ export function useBuilder() {
     () => buildMolecule(cells, { ...params, orient: 'none', centre: false }),
     [cells, params],
   );
-  const validation = useMemo(
-    () => validateCells(cells, { params, limits: state.limits }),
-    [cells, params, state.limits],
-  );
+  const validation = useMemo(() => validateCells(cells, { params }), [cells, params]);
 
   const shareHash = useMemo(
     () =>
@@ -265,9 +250,7 @@ export function useBuilder() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, [shareHash]);
 
-  const canExport =
-    validation.ok ||
-    (state.allowOversize && validation.errors.every((issue) => issue.id === 'too-large'));
+  const canExport = validation.ok;
 
   const shareUrl = useCallback(() => {
     const { origin, pathname, search } = window.location;

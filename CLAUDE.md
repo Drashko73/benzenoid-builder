@@ -34,7 +34,7 @@ src/core/       Pure TypeScript, NO DOM. The chemistry engine.
   elements.ts     element registry (symbol, Z, colour, bond length to C), formula formatting
   lattice.ts      integer honeycomb lattice -> Cartesian; buildMolecule(cells, params)
   orient.ts       centroid + principal-axis orientation (port of _principal_rotation)
-  validate.ts     connectivity, enclosed rings, H-H clashes, model size limits
+  validate.ts     connectivity, enclosed rings, H-H clashes (no size limits: any size is allowed)
   shapes.ts       families: acene, zigzag, hexFlake, rectFlake
   presets.ts      named molecules (generated from molgen/presets.json)
   xyz.ts          .xyz writer/parser, cells JSON codec
@@ -73,8 +73,8 @@ them.
 - **`.xyz` format**: `%6d` count, two-space blank comment line, rows
   `%6d%22.6f%12.6f%12.6f` with **atomic numbers**, LF, trailing newline. `formatFixed`
   keeps Python's `-0.000000`. Element symbols are an opt-in (`symbols: true`), never the default.
-- **Model limits**: 144 atoms = largest training molecule (warn above), 150 = `max_atoms`
-  (error above). Editable in the UI; defaults live in `validate.ts`.
+- **No size limits.** The prediction model's atom limits (144 training max, 150 padding)
+  are that pipeline's concern, not this tool's; do not reintroduce them here.
 - **Cells JSON** `{"cells": [[q,r],...]}` is the molgen API's input format — keep it stable.
 
 ## Working rules

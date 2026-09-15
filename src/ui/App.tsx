@@ -297,12 +297,7 @@ export function App() {
         </div>
 
         <aside className="sidebar">
-          <Summary
-            molecule={molecule}
-            validation={validation}
-            limits={state.limits}
-            ringCount={cells.length}
-          />
+          <Summary molecule={molecule} validation={validation} ringCount={cells.length} />
           <Validation
             validation={validation}
             onFix={(fix) => dispatch({ type: 'applyFix', fix })}

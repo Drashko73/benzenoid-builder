@@ -82,20 +82,9 @@ describe('validateCells', () => {
     expect(terminalClashes(buildMolecule(zigzag(3)), 1.8)[0].distance).toBeCloseTo(1.75, 2);
   });
 
-  it('warns above the training-set size and errors above the hard limit', () => {
-    const r2 = validateCells(hexFlake(2)); // C54H18 = 72 atoms
-    expect(r2.ok).toBe(true);
-    const r3 = validateCells(hexFlake(3)); // C96H24 = 120 atoms
-    expect(r3.ok).toBe(true);
-    const big = validateCells(hexFlake(4)); // C150H30 = 180 atoms
-    expect(big.ok).toBe(false);
-    expect(big.errors[0].id).toBe('too-large');
-
-    const custom = validateCells(hexFlake(3), {
-      limits: { trainingMaxAtoms: 100, hardMaxAtoms: 200 },
-    });
-    expect(custom.ok).toBe(true);
-    expect(custom.warnings[0].id).toBe('outside-training');
+  it('accepts molecules of any size', () => {
+    expect(validateCells(hexFlake(4)).ok).toBe(true); // C150H30, 180 atoms
+    expect(validateCells(hexFlake(8)).ok).toBe(true); // 217 rings
   });
 
   it('skips geometry checks while structural errors are present', () => {

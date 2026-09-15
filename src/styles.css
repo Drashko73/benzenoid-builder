@@ -211,12 +211,6 @@ h3 {
   text-decoration: underline;
 }
 
-.disclosure {
-  text-decoration: none;
-  font-weight: 600;
-  margin-top: 8px;
-}
-
 /* ---- workspace ---------------------------------------------------------- */
 .workspace {
   display: grid;
@@ -414,20 +408,17 @@ h3 {
   white-space: nowrap;
 }
 
-.badge.good,
-.domain.good {
+.badge.good {
   color: var(--good);
   background: var(--good-bg);
 }
 
-.badge.warn,
-.domain.warn {
+.badge.warn {
   color: var(--warn);
   background: var(--warn-bg);
 }
 
-.badge.bad,
-.domain.bad {
+.badge.bad {
   color: var(--bad);
   background: var(--bad-bg);
 }
@@ -460,13 +451,6 @@ h3 {
   margin: 0;
   font-weight: 600;
   white-space: nowrap;
-}
-
-.domain {
-  margin: 10px 0 0;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 12px;
 }
 
 /* validation */
@@ -711,15 +695,6 @@ h3 {
 
 .symbols-toggle {
   margin-top: 10px;
-}
-
-.advanced {
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px dashed var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .sidebar-footer {

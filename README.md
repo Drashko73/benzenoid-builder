@@ -28,15 +28,14 @@ useful on its own for anyone who needs polycyclic aromatic hydrocarbon geometrie
   - an empty hexagon whose six corners are already carbons is a ring whether you
     selected it or not (six rings around a hole are coronene) — _Fill_ adds it;
   - overlapping hydrogens in fjord regions ([4]helicene and the like), where a planar
-    model is physically wrong;
-  - size relative to the prediction model's training range and hard limit
-    (adjustable).
+    model is physically wrong.
+  There is no size limit: draw graphene flakes as large as you like.
 - **Presets and families.** Benzene to hexabenzocoronene and the large flakes of the
   training set; parametric acenes, zigzag chains, hexagonal and rectangular flakes.
 - **Export.** `.xyz` download or copy, ring coordinates as JSON, SVG / PNG image of the
   structure, and a share link that reproduces the whole state.
 - **Parameters.** C–C and C–H bond lengths, orientation convention, file name, comment
-  line, model limits.
+  line, atomic numbers or element symbols.
 - Undo / redo, keyboard shortcuts, light and dark themes. No server, no account: it is a
   static page.
 

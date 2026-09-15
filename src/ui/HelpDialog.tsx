@@ -74,10 +74,6 @@ export function HelpDialog({ open, onClose }: Props) {
             the flat model places two hydrogens on top of each other; the real molecule is a twisted
             helicene, outside what a planar builder can describe.
           </li>
-          <li>
-            <b>Size limits</b> are those of the current-density prediction model and can be changed
-            under Parameters → Model limits.
-          </li>
         </ul>
 
         <h3>The exported file</h3>

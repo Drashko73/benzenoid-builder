@@ -110,13 +110,6 @@ export interface ValidationIssue {
   fix?: { label: string; action: FixAction };
 }
 
-export interface ModelLimits {
-  /** Largest training molecule (atoms); above this the prediction is extrapolating. */
-  trainingMaxAtoms: number;
-  /** Hard padding limit of the prediction model. */
-  hardMaxAtoms: number;
-}
-
 export interface ValidationResult {
   issues: ValidationIssue[];
   errors: ValidationIssue[];

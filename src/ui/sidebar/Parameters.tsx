@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CC_BOND, CH_BOND, DEFAULT_MODEL_LIMITS } from '../../core';
+import { CC_BOND, CH_BOND } from '../../core';
 import type { Builder } from '../state/useBuilder';
 
 interface Props {
@@ -60,7 +60,6 @@ function NumberField({
 
 export function Parameters({ builder }: Props) {
   const { state, dispatch } = builder;
-  const [advanced, setAdvanced] = useState(false);
 
   return (
     <section className="panel parameters" aria-label="Parameters">
@@ -150,66 +149,6 @@ export function Parameters({ builder }: Props) {
       <p className="hint">
         The dataset files use atomic numbers (6, 1). Some viewers only accept symbols.
       </p>
-
-      <button type="button" className="link disclosure" onClick={() => setAdvanced((v) => !v)}>
-        {advanced ? '▾' : '▸'} Model limits
-      </button>
-      {advanced && (
-        <div className="advanced">
-          <p className="hint">
-            Size checks refer to the current-density prediction model: its largest training molecule
-            and the fixed number of atoms it pads to. Adjust them if you retrain.
-          </p>
-          <NumberField
-            id="limit-training"
-            label="Training max atoms"
-            value={state.limits.trainingMaxAtoms}
-            step={1}
-            min={1}
-            max={100000}
-            unit=""
-            onCommit={(v) =>
-              dispatch({
-                type: 'setLimits',
-                limits: { ...state.limits, trainingMaxAtoms: Math.round(v) },
-              })
-            }
-          />
-          <NumberField
-            id="limit-hard"
-            label="Hard max atoms"
-            value={state.limits.hardMaxAtoms}
-            step={1}
-            min={1}
-            max={100000}
-            unit=""
-            onCommit={(v) =>
-              dispatch({
-                type: 'setLimits',
-                limits: { ...state.limits, hardMaxAtoms: Math.round(v) },
-              })
-            }
-          />
-          <label className="inline">
-            <input
-              type="checkbox"
-              checked={state.allowOversize}
-              onChange={(e) => dispatch({ type: 'setAllowOversize', value: e.target.checked })}
-            />
-            Allow export beyond the hard limit
-          </label>
-          {(state.limits.trainingMaxAtoms !== DEFAULT_MODEL_LIMITS.trainingMaxAtoms ||
-            state.limits.hardMaxAtoms !== DEFAULT_MODEL_LIMITS.hardMaxAtoms) && (
-            <button
-              type="button"
-              className="link"
-              onClick={() => dispatch({ type: 'setLimits', limits: DEFAULT_MODEL_LIMITS })}
-            >
-              Reset limits
-            </button>
-          )}
-        </div>
-      )}
     </section>
   );
 }

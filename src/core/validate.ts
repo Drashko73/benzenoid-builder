@@ -1,11 +1,9 @@
 /**
  * Validation of a cell selection, in two tiers:
  *
- *   errors   — the selection does not describe a single planar benzenoid, or the
- *              result cannot be fed to the prediction model at all;
- *   warnings — the molecule is fine but sits outside the region where the
- *              current-density model has been shown to be reliable, or the
- *              planar idealisation is questionable (steric clashes).
+ *   errors   — the selection does not describe a single planar benzenoid;
+ *   warnings — the molecule is fine but the planar idealisation is
+ *              questionable (crowded hydrogens).
  *
  * Every issue carries the cells/atoms to highlight and, where possible, a
  * one-click fix.
@@ -18,20 +16,7 @@ import {
   parseCellKey,
   siteKey,
 } from './lattice';
-import type {
-  BuildParams,
-  Cell,
-  ModelLimits,
-  Molecule,
-  ValidationIssue,
-  ValidationResult,
-} from './types';
-
-/**
- * Limits of the current-density prediction model. The largest training molecule
- * is C114H30 (144 atoms); the network pads every molecule to max_atoms = 150.
- */
-export const DEFAULT_MODEL_LIMITS: ModelLimits = { trainingMaxAtoms: 144, hardMaxAtoms: 150 };
+import type { BuildParams, Cell, Molecule, ValidationIssue, ValidationResult } from './types';
 
 /** Below this H–H distance the planar model is physically wrong (fjord regions: 0.57 Å). */
 export const HH_CLASH_ERROR = 1.0;
@@ -40,7 +25,6 @@ export const HH_CLASH_WARNING = 1.5;
 
 export interface ValidateOptions {
   params?: Partial<BuildParams>;
-  limits?: ModelLimits;
 }
 
 /** Edge-connected components of a cell set, largest first. */
@@ -117,7 +101,7 @@ function summarise(result: ValidationIssue[]): ValidationResult {
 }
 
 /**
- * Validate a selection. Geometry-dependent checks (clashes, size) are skipped
+ * Validate a selection. Geometry-dependent checks (clashes) are skipped
  * while structural errors (disconnected, implicit rings) are present, because
  * the geometry of such a selection is not meaningful.
  */
@@ -125,7 +109,6 @@ export function validateCells(
   cells: readonly Cell[],
   options: ValidateOptions = {},
 ): ValidationResult {
-  const limits = options.limits ?? DEFAULT_MODEL_LIMITS;
   const issues: ValidationIssue[] = [];
 
   if (cells.length === 0) {
@@ -172,7 +155,6 @@ export function validateCells(
   if (issues.length) return summarise(issues);
 
   const molecule = buildMolecule(cells, options.params);
-  const nAtoms = molecule.atoms.length;
 
   const clashes = terminalClashes(molecule, HH_CLASH_WARNING);
   const severe = clashes.filter((c) => c.distance < HH_CLASH_ERROR);
@@ -195,26 +177,6 @@ export function validateCells(
         'Two hydrogens are closer than in an ordinary bay region (1.75 Å). The real molecule ' +
         'probably distorts slightly; the ideal-lattice geometry is still exported as is.',
       atoms: clashes.flatMap((c) => [c.a, c.b]),
-    });
-  }
-
-  if (nAtoms > limits.hardMaxAtoms) {
-    issues.push({
-      id: 'too-large',
-      severity: 'error',
-      title: `${nAtoms} atoms exceeds the model limit of ${limits.hardMaxAtoms}`,
-      detail:
-        'The current-density network pads every molecule to a fixed number of atoms and cannot ' +
-        'accept a larger one. The .xyz file itself is fine for other uses — enable ' +
-        '"allow export beyond model limits" in Parameters to download it anyway.',
-    });
-  } else if (nAtoms > limits.trainingMaxAtoms) {
-    issues.push({
-      id: 'outside-training',
-      severity: 'warning',
-      title: `${nAtoms} atoms is larger than any training molecule (${limits.trainingMaxAtoms})`,
-      detail:
-        'The model extrapolates poorly upward in size; treat a prediction for this molecule as indicative only.',
     });
   }
 
