@@ -1,0 +1,30 @@
+# Dependencies and build output
+node_modules/
+dist/
+dist-ssr/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-*.log*
+pnpm-debug.log*
+*.log
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Claude Code: local (per-machine) settings stay out of the repo
+.claude/settings.local.json
+
+# Python scratch (scripts/gen-fixtures.py)
+__pycache__/
+*.pyc
