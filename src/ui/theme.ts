@@ -10,7 +10,8 @@ function initialTheme(): Theme {
   } catch {
     /* storage unavailable */
   }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  // Light by default; the toggle's choice (stored above) wins over the OS preference.
+  return 'light';
 }
 
 export function useTheme() {
