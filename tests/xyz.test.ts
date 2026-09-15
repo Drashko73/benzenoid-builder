@@ -1,15 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import {
+  MAX_SHARE_HASH_LENGTH,
   acene,
   buildMolecule,
   cellsToJson,
+  decodeCells,
   decodeState,
+  encodeCells,
   encodeState,
   formatFixed,
+  hexFlake,
   parseCellsJson,
   parseXyz,
   toXyz,
 } from '../src/core';
+import type { Cell } from '../src/core';
 
 describe('toXyz', () => {
   const text = toXyz(buildMolecule(acene(1)));
@@ -115,7 +120,7 @@ describe('URL state', () => {
       orient: 'none',
       name: 'naph',
     });
-    expect(hash).toBe('c=0,0;1,0&cc=1.4&o=none&n=naph');
+    expect(hash).toBe('c=0:0..1&cc=1.4&o=none&n=naph');
     expect(decodeState('#' + hash)).toEqual({
       cells: [
         [0, 0],
@@ -127,6 +132,35 @@ describe('URL state', () => {
     });
   });
 
+  it('encodes rows as ranges, including negative coordinates and gaps', () => {
+    const cells: Cell[] = [
+      [-2, -1],
+      [-1, -1],
+      [3, -1],
+      [0, 2],
+    ];
+    const text = encodeCells(cells);
+    expect(text).toBe('-1:-2..-1,3;2:0');
+    expect(decodeCells(text)).toEqual(cells);
+  });
+
+  it('still decodes the legacy per-cell form', () => {
+    expect(decodeState('#c=0,0;1,-1')).toEqual({
+      cells: [
+        [0, 0],
+        [1, -1],
+      ],
+    });
+  });
+
+  it('keeps dense flakes far below the share-link limit', () => {
+    const big = hexFlake(40); // 4921 rings
+    const text = encodeCells(big);
+    expect(text.length).toBeLessThan(1500);
+    expect(text.length).toBeLessThan(MAX_SHARE_HASH_LENGTH);
+    expect(decodeCells(text)).toHaveLength(big.length);
+  });
+
   it('omits default parameters and tolerates an empty selection', () => {
     expect(encodeState({ cells: [], ccBond: 1.42, orient: 'principal' })).toBe('c=');
     expect(decodeState('#c=')).toEqual({ cells: [] });
@@ -136,5 +170,8 @@ describe('URL state', () => {
     expect(decodeState('')).toBeNull();
     expect(decodeState('#foo=bar')).toBeNull();
     expect(decodeState('#c=1,x')).toBeNull();
+    expect(decodeState('#c=1:x')).toBeNull();
+    expect(decodeState('#c=1:5..2')).toBeNull();
+    expect(decodeCells('0:0..999999')).toBeNull(); // refuses absurd ranges
   });
 });

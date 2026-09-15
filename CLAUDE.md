@@ -86,8 +86,10 @@ them.
   regenerate the table rather than editing entries.
 - Validation issues carry `cells`/`atoms` to highlight and an optional `fix`; the UI
   renders them generically, so adding a check means adding an entry in `validateCells`.
-- The share link is the URL hash (`urlState.ts`); every new persistent parameter should
-  be added there with a default-omitting encoding.
+- The share link is the URL hash (`urlState.ts`, row-range encoding `r:q1..q2,q3`); every new
+  persistent parameter should be added there with a default-omitting encoding. The hash is
+  never written when it would exceed `MAX_SHARE_HASH_LENGTH` (8000) — browsers and mail
+  clients truncate long URLs — and the legacy `q,r;q,r` form must keep decoding.
 - Element extensibility: `elements.ts` + `BuildParams.terminal` (site key -> element) are
   the extension point for substituents. The writer and the renderer already handle any
   registered element; only the UI is missing.

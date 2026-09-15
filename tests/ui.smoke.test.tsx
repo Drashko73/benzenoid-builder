@@ -32,7 +32,7 @@ describe('App', () => {
     const pre = screen.getByLabelText('.xyz preview');
     expect(pre.textContent!.startsWith('    12\n  \n     6')).toBe(true);
     expect(screen.getByRole('button', { name: /download \.xyz/i })).toBeEnabled();
-    expect(window.location.hash).toBe('#c=0,0');
+    expect(window.location.hash).toBe('#c=0:0');
   });
 
   it('toggles the cell off again and supports undo', () => {

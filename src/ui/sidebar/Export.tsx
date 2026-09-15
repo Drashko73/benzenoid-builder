@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function Export({ builder, previewRef, notify }: Props) {
-  const { state, molecule, validation, canExport, cells, dispatch, shareUrl } = builder;
+  const { state, molecule, validation, canExport, cells, dispatch, shareUrl, shareable } = builder;
   const xyz = useMemo(
     () => toXyz(molecule, { comment: state.comment, symbols: state.symbols }),
     [molecule, state.comment, state.symbols],
@@ -118,7 +118,12 @@ export function Export({ builder, previewRef, notify }: Props) {
           type="button"
           className="btn small"
           onClick={() => copy(shareUrl(), 'Link')}
-          disabled={!cells.length}
+          disabled={!cells.length || !shareable}
+          title={
+            shareable
+              ? 'A link that reopens this exact molecule and settings'
+              : 'This selection is too large for a link — use Copy cells JSON'
+          }
         >
           Copy share link
         </button>
@@ -139,6 +144,14 @@ export function Export({ builder, previewRef, notify }: Props) {
           Image (PNG)
         </button>
       </div>
+
+      {!shareable && (
+        <p className="hint">
+          This molecule is too large to fit in a share link (
+          {builder.shareHashLength.toLocaleString()} characters); the address bar is left unchanged.
+          Share it as cells JSON or as the .xyz file instead.
+        </p>
+      )}
 
       {importOpen && (
         <div className="import">

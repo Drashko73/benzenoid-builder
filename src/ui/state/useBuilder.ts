@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useReducer } from 'react';
 import {
   CC_BOND,
   CH_BOND,
+  MAX_SHARE_HASH_LENGTH,
   buildMolecule,
   cellKey,
   decodeState,
@@ -224,18 +225,31 @@ export function useBuilder() {
     [cells, state.ccBond, state.chBond, state.orient, state.name],
   );
 
+  /** False when the selection is too big to travel safely inside a URL. */
+  const shareable = shareHash.length <= MAX_SHARE_HASH_LENGTH;
+
   // Mirror the state into the URL (replaceState keeps the back button usable).
+  // Oversized states leave the address bar clean rather than risk a browser limit.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const url = `${window.location.pathname}${window.location.search}#${shareHash}`;
-    if (window.location.hash !== `#${shareHash}`) window.history.replaceState(null, '', url);
-  }, [shareHash]);
+    const hash = shareable ? `#${shareHash}` : '';
+    if (window.location.hash === hash) return;
+    try {
+      window.history.replaceState(
+        null,
+        '',
+        `${window.location.pathname}${window.location.search}${hash}`,
+      );
+    } catch {
+      /* URL too long for this browser: the in-memory state is unaffected */
+    }
+  }, [shareHash, shareable]);
 
   // A link pasted into the same tab (hash change from outside) loads that molecule.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onHashChange = () => {
-      if (window.location.hash === `#${shareHash}`) return;
+      if (window.location.hash === (shareable ? `#${shareHash}` : '')) return;
       const shared = decodeState(window.location.hash);
       if (!shared) return;
       dispatch({ type: 'set', cells: shared.cells, name: shared.name ?? '' });
@@ -248,7 +262,7 @@ export function useBuilder() {
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
-  }, [shareHash]);
+  }, [shareHash, shareable]);
 
   const canExport = validation.ok;
 
@@ -267,6 +281,8 @@ export function useBuilder() {
     validation,
     canExport,
     shareUrl,
+    shareable,
+    shareHashLength: shareHash.length,
     canUndo: state.past.length > 0,
     canRedo: state.future.length > 0,
   };

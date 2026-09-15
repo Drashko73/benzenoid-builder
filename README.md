@@ -33,7 +33,9 @@ useful on its own for anyone who needs polycyclic aromatic hydrocarbon geometrie
 - **Presets and families.** Benzene to hexabenzocoronene and the large flakes of the
   training set; parametric acenes, zigzag chains, hexagonal and rectangular flakes.
 - **Export.** `.xyz` download or copy, ring coordinates as JSON, SVG / PNG image of the
-  structure, and a share link that reproduces the whole state.
+  structure, and a share link that reproduces the whole state (rings are stored as row
+  ranges, so even a 5 000-ring flake fits in ~1 500 characters; a selection that would
+  need more than 8 000 characters is kept out of the URL and shared as cells JSON instead).
 - **Parameters.** C–C and C–H bond lengths, orientation convention, file name, comment
   line, atomic numbers or element symbols.
 - Undo / redo, keyboard shortcuts, light and dark themes. No server, no account: it is a
