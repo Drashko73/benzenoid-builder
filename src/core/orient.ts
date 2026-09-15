@@ -1,9 +1,7 @@
 /**
- * Orientation convention of the current-density dataset: the molecule is centred
- * on its all-atom centroid and its long axis is aligned with +x.
- *
- * Port of `_principal_rotation` in molgen/lattice.py. The network's final
- * projection is not rotation-equivariant, so a deterministic orientation matters.
+ * Export orientation convention: the molecule is centred on its all-atom centroid
+ * and its long axis is aligned with +x. Deterministic on purpose, so the same
+ * molecule always comes out in the same frame.
  */
 
 /** 2x2 rotation matrix, row-major. */
@@ -34,9 +32,9 @@ function multiply(a: Rotation, b: Rotation): Rotation {
  * An eigenvector fixes the axis but not its direction, so the +x/-x choice is
  * settled by the skew of the carbon distribution: the heavier end points to +x.
  * When the skew vanishes (a molecule symmetric under x -> -x) the eigenvector is
- * taken with a non-negative x component (and non-negative y when x = 0). numpy's
- * eigh makes no such promise, so the Python generator may return the same
- * molecule rotated by 180 degrees in that one case: a physically identical structure.
+ * taken with a non-negative x component (and non-negative y when x = 0). Generic
+ * symmetric eigensolvers make no such promise, so the reference fixtures may differ
+ * by a 180 degree rotation in that one case: a physically identical structure.
  */
 export function principalRotation(
   carbons: readonly (readonly [number, number])[],

@@ -1,6 +1,6 @@
 /**
- * Parametric families of benzenoids, identical to `molgen/shapes.py` so that a
- * family generated here matches the one the current-density API produces.
+ * Parametric families of benzenoids. Their cell layouts are pinned by the
+ * reference fixtures, so the same parameters always give the same molecule.
  */
 import type { Cell } from './types';
 

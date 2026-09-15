@@ -85,8 +85,8 @@ export function HelpDialog({ open, onClose }: Props) {
           Standard <code>.xyz</code>: atom count, a comment line, then one atom per line written as
           atomic number and x, y, z in Ångström. Carbons come first (sorted by lattice position),
           then hydrogens. The molecule is centred on its centroid in the z = 0 plane and, by
-          default, rotated so its long axis lies along x — the conventions of the current-density
-          dataset.
+          default, rotated so its long axis lies along x, so the same molecule always comes out in
+          the same frame.
         </p>
         <form method="dialog" className="button-row">
           <button type="submit" className="btn primary">

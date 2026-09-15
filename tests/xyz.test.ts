@@ -31,7 +31,7 @@ describe('toXyz', () => {
     );
   });
 
-  it('uses atomic numbers and the dataset column widths (%6d%22.6f%12.6f%12.6f)', () => {
+  it('uses atomic numbers and fixed column widths (%6d%22.6f%12.6f%12.6f)', () => {
     const row = /^ {5}[16] {5,}-?\d+\.\d{6} {3,}-?\d+\.\d{6} {3,}-?\d+\.\d{6}$/;
     for (const line of lines.slice(2, 14)) {
       expect(line).toMatch(row);
@@ -75,7 +75,7 @@ describe('formatFixed', () => {
   });
 });
 
-describe('cells JSON interop with the molgen API', () => {
+describe('cells JSON', () => {
   it('serialises sorted cells in the {"cells": [...]} form', () => {
     expect(
       cellsToJson([

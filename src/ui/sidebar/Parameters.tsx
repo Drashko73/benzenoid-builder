@@ -76,8 +76,7 @@ export function Parameters({ builder }: Props) {
         onCommit={(chBond) => dispatch({ type: 'setParams', chBond })}
       />
       <p className="hint">
-        Defaults {CC_BOND} / {CH_BOND} Å were fitted to DFT geometries of the current-density
-        dataset.{' '}
+        Defaults {CC_BOND} / {CH_BOND} Å were fitted to DFT-optimised benzenoid geometries.{' '}
         {(state.ccBond !== CC_BOND || state.chBond !== CH_BOND) && (
           <button
             type="button"
@@ -111,8 +110,8 @@ export function Parameters({ builder }: Props) {
         </label>
       </fieldset>
       <p className="hint">
-        Both centre the molecule on its centroid in the z = 0 plane. “Long axis along x” is the
-        dataset convention (heavier end to +x; round molecules keep the grid orientation).
+        Both centre the molecule on its centroid in the z = 0 plane. “Long axis along x” gives a
+        reproducible frame (heavier end to +x; round molecules keep the grid orientation).
       </p>
 
       <label htmlFor="mol-name" className="field">
@@ -131,7 +130,7 @@ export function Parameters({ builder }: Props) {
         <input
           id="mol-comment"
           type="text"
-          placeholder="(blank, like the dataset files)"
+          placeholder="(blank by default)"
           value={state.comment}
           onChange={(e) => dispatch({ type: 'setComment', comment: e.target.value })}
           maxLength={200}
@@ -147,7 +146,7 @@ export function Parameters({ builder }: Props) {
         Write element symbols (C, H) instead of atomic numbers
       </label>
       <p className="hint">
-        The dataset files use atomic numbers (6, 1). Some viewers only accept symbols.
+        Atomic numbers (6, 1) are the default; some viewers only accept symbols.
       </p>
     </section>
   );

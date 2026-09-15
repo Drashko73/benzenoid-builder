@@ -88,10 +88,8 @@ describe('presets', () => {
     }
   });
 
-  it('have unique ids and aliases', () => {
+  it('have unique ids', () => {
     const ids = PRESETS.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
-    const aliases = PRESETS.flatMap((p) => p.aliases);
-    expect(new Set(aliases).size).toBe(aliases.length);
   });
 });

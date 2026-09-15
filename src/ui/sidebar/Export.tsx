@@ -107,7 +107,7 @@ export function Export({ builder, previewRef, notify }: Props) {
           className="btn small"
           onClick={() => copy(cellsToJson(cells), 'cells JSON')}
           disabled={!cells.length}
-          title="Ring coordinates in the form the current-density molgen API accepts"
+          title="Ring coordinates as compact JSON, for scripts or for re-importing"
         >
           Copy cells JSON
         </button>

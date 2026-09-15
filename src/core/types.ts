@@ -51,10 +51,10 @@ export interface BuildParams {
   ccBond: number;
   /** C–H bond length in Angstroms. */
   chBond: number;
-  /** 'principal': put the long axis along +x (dataset convention); 'none': keep the lattice orientation. */
+  /** 'principal': put the long axis along +x (export convention); 'none': keep the lattice orientation. */
   orient: Orientation;
   /**
-   * Centre the all-atom centroid on the origin (default true, the dataset
+   * Centre the all-atom centroid on the origin (default true, the export
    * convention). The canvas sets this to false to draw atoms on the grid.
    */
   centre?: boolean;

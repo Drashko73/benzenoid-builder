@@ -22,7 +22,7 @@ import type { BuildParams, Cell, Molecule, ValidationIssue, ValidationResult } f
  * Sanity cap on molecule size. The largest benzenoid ever synthesised is about
  * C222H42 (264 atoms); beyond a few hundred atoms one is drawing a graphene
  * nanoflake, not a molecule, and the editor and .xyz preview stop being useful.
- * Not a limit of the prediction pipeline — change it freely.
+ * Change it freely.
  */
 export const MAX_ATOMS = 1000;
 

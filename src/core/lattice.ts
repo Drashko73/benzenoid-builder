@@ -1,7 +1,6 @@
 /**
- * Exact honeycomb (polyhex) geometry — a port of `molgen/lattice.py` from the
- * current-density project, kept line-for-line compatible so that both tools
- * produce identical coordinates for the same set of cells.
+ * Exact honeycomb (polyhex) geometry. The construction is pinned by the reference
+ * files in tests/fixtures: the same set of cells must always give identical coordinates.
  *
  * A benzenoid is a set of hexagons on a triangular lattice. Every carbon sits on
  * a honeycomb lattice site, so the whole construction is done in *integer*
@@ -28,7 +27,7 @@ import { element, formatFormula } from './elements';
 import { principalRotation, type Rotation } from './orient';
 import type { Atom, Bond, BuildParams, Cell, ElementSymbol, Molecule, Site } from './types';
 
-/** Bond lengths fitted to the whole DFT dataset of the current-density project. */
+/** Bond lengths fitted to DFT-optimised geometries of 18 benzenoids (benzene to C114H30). */
 export const CC_BOND = 1.42;
 export const CH_BOND = 1.09;
 
@@ -200,7 +199,7 @@ function applyRotation(rot: Rotation, x: number, y: number): [number, number] {
  *
  * The cells are assumed to be a valid polyhex (see validate.ts); this function
  * builds geometry for any cell set that gives every carbon at least two carbon
- * neighbours. Applies the dataset convention: all-atom centroid at the origin,
+ * neighbours. Applies the export convention: all-atom centroid at the origin,
  * molecule in the z = 0 plane, long axis along x when `orient === 'principal'`.
  */
 export function buildMolecule(
@@ -239,7 +238,7 @@ export function buildMolecule(
     }
   });
 
-  // --- dataset convention: centre on the all-atom centroid, long axis along x
+  // --- export convention: centre on the all-atom centroid, long axis along x
   const all = [...carbons, ...terminals.map((t) => t.pos)];
   const n = all.length;
   const shift: [number, number] =

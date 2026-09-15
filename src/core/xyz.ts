@@ -1,7 +1,7 @@
 /**
- * .xyz serialisation matching the files of the current-density dataset.
+ * .xyz serialisation in a fixed-width layout.
  *
- * Those files use atomic numbers rather than symbols, a blank comment line, and
+ * The files use atomic numbers rather than symbols, a blank comment line, and
  * fixed column widths:
  *
  *         12
@@ -9,8 +9,8 @@
  *          6             -1.030328   -0.934616    0.000001
  *
  * which is "%6d%22.6f%12.6f%12.6f" per atom. Readers split on whitespace, so
- * the widths are cosmetic — but matching them keeps generated files visually
- * indistinguishable from the DFT ones. Do not change this format.
+ * the widths are cosmetic, but external tools rely on the layout being stable.
+ * Do not change this format.
  */
 import { atomicNumber } from './elements';
 import type { Cell, Molecule } from './types';
@@ -26,11 +26,11 @@ function pad(text: string, width: number): string {
 }
 
 export interface XyzOptions {
-  /** Comment line (written after two leading spaces). Blank in the dataset. */
+  /** Comment line (written after two leading spaces). Blank by default. */
   comment?: string;
   /**
    * Write element symbols (C, H) instead of atomic numbers. Off by default to
-   * match the dataset; on for viewers that only accept symbols.
+   * keep the fixed-width numeric layout; on for viewers that only accept symbols.
    */
   symbols?: boolean;
 }
@@ -75,7 +75,7 @@ export function parseXyz(text: string): { comment: string; atoms: XyzAtomRow[] }
   return { comment: (lines[1] ?? '').trim(), atoms };
 }
 
-/** Cells as the JSON body accepted by the current-density molgen API. */
+/** Cells as a compact JSON document, `{"cells": [[q, r], ...]}`. */
 export function cellsToJson(cells: readonly Cell[]): string {
   const sorted = [...cells].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
   return JSON.stringify({ cells: sorted.map(([q, r]) => [q, r]) });

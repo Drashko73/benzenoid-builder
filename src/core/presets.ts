@@ -1,7 +1,6 @@
 /**
- * Named molecules. The cell lists were extracted from the DFT geometries of the
- * current-density dataset by `molgen/audit.py`; `aliases` are the names that
- * generator accepts, so the two tools agree on every preset.
+ * Named molecules. The cell lists were extracted from DFT-optimised geometries by
+ * detecting the hexagonal rings in each structure.
  */
 import type { Cell } from './types';
 
@@ -10,8 +9,6 @@ export interface Preset {
   name: string;
   formula: string;
   description: string;
-  /** Names accepted by the current-density molgen API for the same molecule. */
-  aliases: string[];
   cells: Cell[];
 }
 
@@ -21,7 +18,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Benzene',
     formula: 'C6H6',
     description: 'The single ring.',
-    aliases: ['benzene', 'train_1', 'test_benz'],
     cells: [[0, 0]],
   },
   {
@@ -29,7 +25,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Naphthalene',
     formula: 'C10H8',
     description: 'Two fused rings.',
-    aliases: ['naphthalene', 'train_2'],
     cells: [
       [0, 0],
       [1, 0],
@@ -40,7 +35,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Anthracene',
     formula: 'C14H10',
     description: 'Three rings in a line (acene, n = 3).',
-    aliases: ['anthracene', 'train_3'],
     cells: [
       [0, 0],
       [1, 0],
@@ -52,7 +46,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Tetracene',
     formula: 'C18H12',
     description: 'Four rings in a line (acene, n = 4).',
-    aliases: ['tetracene', 'train_4'],
     cells: [
       [0, 0],
       [1, 0],
@@ -65,7 +58,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Phenanthrene',
     formula: 'C14H10',
     description: 'Three rings, angular; has one bay region.',
-    aliases: ['phenanthrene', 'train_5'],
     cells: [
       [0, 1],
       [1, 1],
@@ -77,7 +69,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Chrysene',
     formula: 'C18H12',
     description: 'Four rings, zigzag (angular chain, n = 4).',
-    aliases: ['train_7'],
     cells: [
       [0, 1],
       [1, 1],
@@ -90,7 +81,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Tetraphene',
     formula: 'C18H12',
     description: 'Benz[a]anthracene: anthracene with one angular ring.',
-    aliases: ['train_8'],
     cells: [
       [0, 1],
       [1, 1],
@@ -103,7 +93,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Pyrene',
     formula: 'C16H10',
     description: 'Four rings in a compact 2 x 2 block.',
-    aliases: ['pyrene', 'train_6'],
     cells: [
       [0, 1],
       [1, 0],
@@ -116,7 +105,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Triphenylene',
     formula: 'C18H12',
     description: 'Three rings around a central one; round (no long axis).',
-    aliases: ['triphenylene', 'train_9'],
     cells: [
       [0, 2],
       [1, 0],
@@ -129,7 +117,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Perylene',
     formula: 'C20H12',
     description: 'Two naphthalene units joined by a central ring.',
-    aliases: ['perylene', 'test_perilen'],
     cells: [
       [0, 1],
       [0, 2],
@@ -143,7 +130,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Coronene',
     formula: 'C24H12',
     description: 'Six rings around a central one (hexagonal flake, radius 1).',
-    aliases: ['coronene', 'train_11', 'test_koronen'],
     cells: [
       [0, 1],
       [0, 2],
@@ -159,7 +145,6 @@ export const PRESETS: readonly Preset[] = [
     name: 'Hexabenzocoronene',
     formula: 'C42H18',
     description: 'Coronene with six extra rings (C42H18).',
-    aliases: ['hbc', 'test_HBC'],
     cells: [
       [0, 3],
       [1, 1],
@@ -177,11 +162,10 @@ export const PRESETS: readonly Preset[] = [
     ],
   },
   {
-    id: 'dataset-10',
-    name: 'Dibenzopyrene (dataset #10)',
+    id: 'dibenzopyrene',
+    name: 'Dibenzopyrene',
     formula: 'C24H14',
     description: 'Pyrene with two extra rings on opposite ends.',
-    aliases: ['train_10'],
     cells: [
       [0, 3],
       [1, 1],
@@ -192,11 +176,10 @@ export const PRESETS: readonly Preset[] = [
     ],
   },
   {
-    id: 'dataset-14',
-    name: 'C84H30 flake (dataset #14)',
+    id: 'flake-84',
+    name: 'C84H30 flake',
     formula: 'C84H30',
-    description: '28-ring graphene-like flake from the training set.',
-    aliases: ['train_14'],
+    description: '28-ring graphene-like flake.',
     cells: [
       [0, 7],
       [1, 5],
@@ -229,11 +212,10 @@ export const PRESETS: readonly Preset[] = [
     ],
   },
   {
-    id: 'dataset-15',
-    name: 'C96H30 flake (dataset #15)',
+    id: 'flake-96',
+    name: 'C96H30 flake',
     formula: 'C96H30',
-    description: '34-ring graphene-like flake from the training set.',
-    aliases: ['train_15'],
+    description: '34-ring graphene-like flake.',
     cells: [
       [0, 6],
       [1, 4],
@@ -272,11 +254,10 @@ export const PRESETS: readonly Preset[] = [
     ],
   },
   {
-    id: 'dataset-12',
-    name: 'C114H30 flake (dataset #12)',
+    id: 'flake-114',
+    name: 'C114H30 flake',
     formula: 'C114H30',
-    description: '43-ring flake; the largest training molecule (144 atoms).',
-    aliases: ['train_12'],
+    description: '43-ring graphene-like flake (144 atoms).',
     cells: [
       [0, 6],
       [1, 4],
