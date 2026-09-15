@@ -51,8 +51,13 @@ export interface BuildParams {
   ccBond: number;
   /** C–H bond length in Angstroms. */
   chBond: number;
-  /** 'principal': centre on the centroid and put the long axis along +x (dataset convention). */
+  /** 'principal': put the long axis along +x (dataset convention); 'none': keep the lattice orientation. */
   orient: Orientation;
+  /**
+   * Centre the all-atom centroid on the origin (default true, the dataset
+   * convention). The canvas sets this to false to draw atoms on the grid.
+   */
+  centre?: boolean;
   /**
    * Optional terminal-atom substitutions keyed by site key ("X,Y"). Any perimeter carbon
    * not listed carries a hydrogen. This is the extension point for substituents; the UI

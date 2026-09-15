@@ -36,6 +36,7 @@ export const DEFAULT_PARAMS: BuildParams = {
   ccBond: CC_BOND,
   chBond: CH_BOND,
   orient: 'principal',
+  centre: true,
 };
 
 /** Vertex offsets (a, b) for the six corners of one hexagon, k = 0..5, starting at the top. */
@@ -241,9 +242,10 @@ export function buildMolecule(
   // --- dataset convention: centre on the all-atom centroid, long axis along x
   const all = [...carbons, ...terminals.map((t) => t.pos)];
   const n = all.length;
-  const shift: [number, number] = n
-    ? [all.reduce((s, p) => s + p[0], 0) / n, all.reduce((s, p) => s + p[1], 0) / n]
-    : [0, 0];
+  const shift: [number, number] =
+    n && params.centre !== false
+      ? [all.reduce((s, p) => s + p[0], 0) / n, all.reduce((s, p) => s + p[1], 0) / n]
+      : [0, 0];
   let cpos = carbons.map(([x, y]) => [x - shift[0], y - shift[1]] as [number, number]);
   let tpos = terminals.map(({ pos: [x, y] }) => [x - shift[0], y - shift[1]] as [number, number]);
 
